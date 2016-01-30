@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <title>Facelets Template</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="../Plantilla/formulario.xhtml">
+            <ui:define name="top">
+                Página que permite manipular los datos de la Sucursal
+            </ui:define>
+            <ui:define name="contenido">
+                <h:form id="frmEmpresa">
+                    <p:panel id="empleadoContenido" header="Datos de la Sucursal">
+                        <p:dataTable id="lstEmpresa" value="#{empresaControlador.lstEmpresa}" var="empresa" selection="#{empresaControlador.selEmpresa}" 
+                                     rowKey="#{empresa.id_restaurant}" selectionMode="single" paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20" 
+                                     emptyMessage="No se han encontrado registros" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PageLinks} {NextPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{empresa.nombre}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Dirección">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{empresa.direccion}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Teléfono">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{empresa.telefono}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Administrador">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{empresa.administrador}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Acciones"/>
+                                </f:facet>
+                                <p:commandButton icon="ui-icon-pencil" title="Editar" update=":frmUpdatEmpresa:pnlDatos" onclick="PF('wglUpdatEmpresa').show()">
+                                    <f:setPropertyActionListener value="#{empresa}" target="#{empresaControlador.selEmpresa}"/>
+                                </p:commandButton>
+                                <p:commandButton icon="ui-icon-trash" title="Eliminar" update=":frmDeletEmpresa" onclick="PF('wglDeletEmpresa').show()">
+                                    <f:setPropertyActionListener value="#{empresa}" target="#{empresaControlador.selEmpresa}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <f:facet name="footer">
+                                <p:commandButton id="btnNuevo" value="Nueva Empresa" 
+                                                 icon="fa-child" onclick="PF('wglInsertEmpresa').show()" type="button"
+                                                 update=":frmEmpresa:frmInsertEmpresa"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form> 
+            </ui:define>
+            <ui:define name="dialogos">
+                <!--Insertar empresa-->
+                <p:dialog widgetVar="wglInsertEmpresa" modal="true" resizable="false" showEffect="fade" hideEffect="explode" 
+                          header="Insertar empresa">
+                    <h:form id="frmInsertEmpresa">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Nombre"/>
+                            <p:inputText id="txtNombre" label="Nombre" requiredMessage="Ingrese el nombre de la empresa" value="#{empresaControlador.objEmpresa.nombre}" required="true"/>
+
+                            <p:outputLabel value="Dirección"/>
+                            <p:inputText id="txtDireccion" label="Direccion" value="#{empresaControlador.objEmpresa.direccion}" required="true"/>
+
+                            <p:outputLabel value="Teléfono"/>
+                            <p:inputText id="txtTelefono" type="number" label="Telefono" value="#{empresaControlador.objEmpresa.telefono}" required="true"/>
+
+                            <p:outputLabel value="Administrador"/>
+                            <p:inputText id="txtAdministrador" label="Administrador" requiredMessage="Ingrese el nombre del administrador" value="#{empresaControlador.objEmpresa.administrador}" required="true"/>
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Ingresar" process="@form" action="#{empresaControlador.insertarEmpresa()}" 
+                                         update=":frmEmpresa"/>
+                        <p:commandButton value="Cancelar" onclick="PF('wglInsertEmpresa').hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+
+                <!--Actualizar empresa-->
+                <p:dialog widgetVar="wglUpdatEmpresa" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Actualizar empresa" >
+                    <h:form id="frmUpdatEmpresa">
+                        <p:panelGrid columns="2" id="pnlDatos">
+                            <p:outputLabel value="Nombre"/>
+                            <p:inputText id="txtNombre" label="Nombre" requiredMessage="Ingrese el nombre de la empresa" value="#{empresaControlador.selEmpresa.nombre}" required="true"/>
+
+                            <p:outputLabel value="Dirección"/>
+                            <p:inputText id="txtDireccion" label="Direccion" value="#{empresaControlador.selEmpresa.direccion}" required="true"/>
+
+                            <p:outputLabel value="Teléfono"/>
+                            <p:inputText id="txtTelefono" type="number" label="Telefono" value="#{empresaControlador.selEmpresa.telefono}" required="true"/>
+
+                            <p:outputLabel value="Administrador"/>
+                            <p:inputText id="txtAdministrador" label="Administrador" requiredMessage="Ingrese el nombre del administrador" value="#{empresaControlador.selEmpresa.administrador}" required="true"/>
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Actualizar" process="@form" action="#{empresaControlador.actualizarEmpresa()}" update=":frmEmpresa:lstEmpresa"/>
+                        <p:commandButton value="Cancelar" onclick="PF('wglUpdatEmpresa').hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+                
+                <!--Eliminar empresa-->
+                <p:dialog widgetVar="wglDeletEmpresa" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Eliminar empresa">
+                    <h:form id="frmDeletEmpresa">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Nombre"/>
+                            <p:outputLabel id="txtNombre" value="#{empresaControlador.selEmpresa.nombre}" />
+
+                            <p:outputLabel value="Dirección"/>
+                            <p:outputLabel id="txtDireccion" value="#{empresaControlador.selEmpresa.direccion}" />
+
+                            <p:outputLabel value="Teléfono"/>
+                            <p:outputLabel id="txtTelefono" value="#{empresaControlador.selEmpresa.telefono}" />
+
+                            <p:outputLabel value="Administrador"/>
+                            <p:outputLabel id="txtAdministrador" value="#{empresaControlador.selEmpresa.administrador}" />
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Eliminar" process="@form" action="#{empresaControlador.eliminarEmpresa()}" update=":frmEmpresa:lstEmpresa"/>
+                        <p:commandButton value="Cancelar" onclick="PF('wglDeletEmpresa').hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

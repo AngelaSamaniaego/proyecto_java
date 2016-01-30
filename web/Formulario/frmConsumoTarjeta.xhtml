@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <title>Facelets Template</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="../Plantilla/formulario.xhtml">
+            <ui:define name="top">
+                Página que permite manipular los datos del Consumo de la Tarjeta
+            </ui:define>
+            <ui:define name="contenido">
+                <h:form id="frmConsumoTarjeta">
+                    <p:panel id="consumoTarjetaContenido" header="Datos del Consumo de la Tarjeta">
+                        <p:dataTable id="lstConsumoTarjeta" value="#{consumoTarjetaControlador.lstConsumoTarjeta}" var="consumo">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Cantidad">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{consumo.cantidad}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Descripción">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{consumo.descripcion}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Fecha de consumo">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{consumo.fecha_consumo}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Acciones"/>
+                                </f:facet>
+                                <p:commandButton icon="ui-icon-pencil" title="Editar" update=":frmConsumo" onclick="PF('wglInsertConsumoTarjeta').show()" >
+                                    <f:setPropertyActionListener value="#{consumo}" target="#{consumoTarjetaControlador.selConsumoTarjeta}"/>
+                                </p:commandButton>
+                                <p:commandButton icon="ui-icon-tash" title="Eliminar datos"></p:commandButton>
+                            </p:column>
+                            <f:facet name="footer">
+                                <p:commandButton id="btnNuevo" value="Nuevo Consumo de Tarjeta" icon="fa-child" onclick="PF('wglInsertConsumoTarjeta').show()" type="button"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form> 
+            </ui:define>
+            <ui:define name="dialogos">
+                <p:dialog widgetVar="wglInsertConsumoTarjeta" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Insertar consumo de la tarjeta">
+                    <h:form>
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Cantidad"/>
+                            <p:inputText id="txtCantidad" label="Cantidad" requiredMessage="Ingrese la cantidad de platos" value="#{consumoTarjetaControlador.objConsumoTarjeta.cantidad}" required="true"/>
+
+                            <p:outputLabel value="Descripción"/>
+                            <p:inputText id="txtDescripcion" label="Descripcion" requiredMessage="Ingrese la descripción" value="#{consumoTarjetaControlador.objConsumoTarjeta.descripcion}" required="true"/>
+
+                            <p:outputLabel value="Fecha de Consumo"/>
+                            <p:inputText id="txtConsumo" label="Consumo" requiredMessage="Ingrese la fecha de consumo" value="#{consumoTarjetaControlador.objConsumoTarjeta.fecha_consumo}" required="true"/>
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Ingresar" action="#{consumoTarjetaControlador.insertarConsumoTarjeta()}" update=":frmConsumoTarjeta:lstConsumoTarjeta"/>
+                        <p:commandButton value="Cancelar" onclick="wglInsertConsumoTarjeta.hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+                
+                <p:dialog widgetVar="wglUpdatConsumoTarjeta" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Insertar consumo de la tarjeta">
+                    <h:form>
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Cantidad"/>
+                            <p:inputText id="txtCantidad" label="Cantidad" requiredMessage="Ingrese la cantidad de platos" value="#{consumoTarjetaControlador.selConsumoTarjeta.cantidad}" required="true"/>
+
+                            <p:outputLabel value="Descripción"/>
+                            <p:inputText id="txtDescripcion" label="Descripcion" requiredMessage="Ingrese la descripción" value="#{consumoTarjetaControlador.selConsumoTarjeta.descripcion}" required="true"/>
+
+                            <p:outputLabel value="Fecha de Consumo"/>
+                            <p:inputText id="txtConsumo" label="Consumo" requiredMessage="Ingrese la fecha de consumo" value="#{consumoTarjetaControlador.selConsumoTarjeta.fecha_consumo}" required="true"/>
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Actualizar" action="#{consumoTarjetaControlador.actualizarConsumoTarjeta()}" update=":frmConsumoTarjeta:lstConsumoTarjeta"/>
+                        <p:commandButton value="Cancelar" onclick="wglUpdatConsumoTarjeta.hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+
+</html>

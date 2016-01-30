@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <title>Facelets Template</title>
+    </h:head>
+
+    <body>
+        <ui:composition template="../Plantilla/formulario.xhtml">
+
+           <ui:define name="top">
+                Página que permite manipular los datos de la Factura
+            </ui:define>
+            <ui:define name="contenido">
+                <h:form id="frmFactura">
+                    <p:panel id="facturaContenido" header="Datos del Factura">
+                        <p:dataTable id="lstFactura" value="#{facturaControlador.lstFactura}" var="factura">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Fecha">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{factura.fecha}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Total">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{factura.total}"></h:outputText>
+                            </p:column>
+                             <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Iva">
+                                    </h:outputText>
+                                </f:facet>
+                                 <h:outputText value="#{factura.iva}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Acciones"/>
+                                </f:facet>
+                                <p:commandButton icon="ui-icon-pencil" title="Editar datos"></p:commandButton>
+                                <p:commandButton icon="ui-icon-tash" title="Eliminar datos"></p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form> 
+            </ui:define>
+        </ui:composition>
+
+    </body>
+
+</html>

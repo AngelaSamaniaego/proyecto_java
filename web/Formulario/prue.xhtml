@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <title>Facelets Template</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="../Plantilla/formulario.xhtml">
+            <ui:define name="top">
+                Página que permite manipular los datos de la Tarjeta
+            </ui:define>
+            <ui:define name="contenido">
+                <h:form id="frmTarjeta">
+                    <p:panel id="tarjetaContenido" header="Datos de la Tarjeta">
+                        <p:dataTable id="lstTarjeta" value="#{tarjetaControlador.lstTarjeta}" var="tarjeta" selection="#{tarjetaControlador.selTarjeta}" 
+                                     rowKey="#{tarjeta.id_tarjeta}" selectionMode="single" paginator="true" rows="5" rowsPerPageTemplate="5,10,15,20" 
+                                     emptyMessage="No se han encontrado registros" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PageLinks} {NextPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Id Tarjeta">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{tarjeta.id_tarjeta}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre del Cliente">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{tarjeta.nom_cli}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Fecha de Compra">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{tarjeta.fecha_compra}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Fecha de Caducidad">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{tarjeta.fecha_caducidad}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Número de comidas">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{tarjeta.num_comidas}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Costo">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{tarjeta.costo}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Abono">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{tarjeta.bono}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Saldo">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{tarjeta.saldo}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Acciones"/>
+                                </f:facet>
+                                <p:commandButton icon="ui-icon-pencil" title="Editar" update=":frmUpdatTarjeta:pnlDatos" onclick="PF('wglUpdatTarjeta').show()">
+                                    <f:setPropertyActionListener value="#{tarjeta}" target="#{tarjetaControlador.selTarjeta}"/>
+                                </p:commandButton>
+                                <p:commandButton icon="ui-icon-trash" title="Eliminar" update=":frmDeletTarjeta" onclick="PF('wglDeletTarjeta').show()">
+                                    <f:setPropertyActionListener value="#{tarjeta}" target="#{tarjetaControlador.selTarjeta}"/>
+                                </p:commandButton>
+                                <p:commandButton icon="ui-icon-cart" title="Factura" update=":frmConsumo" onclick="PF('wglInsertConsumoTarjeta').show()">
+                                    <f:setPropertyActionListener value="#{tarjeta}" target="#{tarjetaControlador.selTarjeta}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <f:facet name="footer">
+                                <p:commandButton id="btnNuevo" value="Nueva Tarjeta" icon="fa-child" onclick="PF('wglInsertTarjeta').show()" 
+                                                 type="button" update=":frmTarjeta:frmInsertTarjeta"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form> 
+            </ui:define>
+
+            <ui:define name="dialogos">
+                <!--Insertar Tarjeta-->
+                <p:dialog widgetVar="wglInsertTarjeta" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Insertar la Tarjeta">
+                    <h:form id="frmInsertTarjeta">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Estado de la tarjeta"/>
+                            <p:selectOneMenu id="txtestado" value="#{tarjeta.cod_estado}">
+
+                                <f:selectItems value="#{estadoTarjetaControlador.lstEstado_Tarjeta}" var="Est"
+                                               itemLabel="#{Est.descripcion}" itemValue="#{Est.id_estado}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Fecha de Compra"/>
+                            <p:inputText id="txtCompra" label="Compra" requiredMessage="Ingrese la Fecha de Compra" value="#{tarjetaControlador.objTarjeta.fecha_compra}" required="true"/>
+
+                            <p:outputLabel value="Fecha de Caducidad"/>
+                            <p:inputText id="txtCaducidad" label="Caducidad" requiredMessage="Ingrese la Fecha de Caducidad" value="#{tarjetaControlador.objTarjeta.fecha_compra}" required="true"/>
+
+                            <p:outputLabel value="Numero de Comidas"/>
+                            <p:inputText id="txtComidas" label="Comidas" requiredMessage="Ingrese el Numero de Comidas" value="#{tarjetaControlador.objTarjeta.fecha_caducidad}" required="true"/>
+
+                            <p:outputLabel value="Costo"/>
+                            <p:inputText id="txtCosto" label="Costo" requiredMessage="Ingrese el Costo" value="#{tarjetaControlador.objTarjeta.costo}" required="true"/>
+
+                            <p:outputLabel value="Abono"/>
+                            <p:inputText id="txtAbono" label="Abono" requiredMessage="Ingrese el Abono" value="#{tarjetaControlador.objTarjeta.bono}" required="true"/>
+
+                            <p:outputLabel value="Saldo"/>
+                            <p:inputText id="txtSaldo" label="Saldo" requiredMessage="Ingrese el Saldo" value="#{tarjetaControlador.objTarjeta.saldo}" required="true"/>
+
+                            <p:outputLabel value="Empleado"/>
+                            <p:outputLabel value="1"/>
+
+                            <p:outputLabel value="Cliente"/>
+                            <p:selectOneMenu id="txtcliente" value="#{tarjeta.cod_cli}">
+
+                                <f:selectItems value="#{clienteControlador.lstCliente}" var="Cli"
+                                               itemLabel="#{Cli.nombre_cliente}" itemValue="#{Cli.id_cliente}"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Ingresar" action="#{tarjetaControlador.insertarTarjeta()}" update=":frmTarjeta:lstTarjeta"/>
+                        <p:commandButton value="Cancelar" onclick="PF('wglInsertTarjeta').hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+
+                <!--Actualizar Tarjeta-->
+                <p:dialog widgetVar="wglUpdatTarjeta" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Actualizar Tarjeta">
+                    <h:form id="frmUpdatTarjeta">
+                        <p:panelGrid columns="2" id="pnlDatos">
+                            <p:outputLabel value="Fecha de Compra"/>
+                            <p:inputText id="txtCompra" label="Compra" requiredMessage="Ingrese la Fecha de Compra" value="#{tarjetaControlador.selTarjeta.fecha_compra}" required="true"/>
+
+                            <p:outputLabel value="Fecha de Caducidad"/>
+                            <p:inputText id="txtCaducidad" label="Caducidad" requiredMessage="Ingrese la Fecha de Caducidad" value="#{tarjetaControlador.selTarjeta.fecha_compra}" required="true"/>
+
+                            <p:outputLabel value="Numero de Comidas"/>
+                            <p:inputText id="txtComidas" label="Comidas" requiredMessage="Ingrese el Numero de Comidas" value="#{tarjetaControlador.selTarjeta.fecha_caducidad}" required="true"/>
+
+                            <p:outputLabel value="Costo"/>
+                            <p:inputText id="txtCosto" label="Costo" requiredMessage="Ingrese el Costo" value="#{tarjetaControlador.selTarjeta.costo}" required="true"/>
+
+                            <p:outputLabel value="Abono"/>
+                            <p:inputText id="txtAbono" label="Abono" requiredMessage="Ingrese el Abono" value="#{tarjetaControlador.selTarjeta.bono}" required="true"/>
+
+                            <p:outputLabel value="Saldo"/>
+                            <p:inputText id="txtSaldo" label="Saldo" requiredMessage="Ingrese el Saldo" value="#{tarjetaControlador.selTarjeta.saldo}" required="true"/>
+                            <p:outputLabel value="Empleado"/>
+                            <p:outputLabel value="nombre logueado"/>
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Actualizar" action="#{tarjetaControlador.actualizarTarjeta()}" update=":frmTarjeta:lstTarjeta"/>
+                        <p:commandButton value="Cancelar" onclick="PF('wglUpdatTarjeta').hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+
+                <!--Eliminar Tarjeta-->
+                <p:dialog widgetVar="wglDeletTarjeta" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Actualizar Tarjeta">
+                    <h:form id="frmDeletTarjeta">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Fecha de Compra"/>
+                            <p:outputLabel id="txtCompra" value="#{tarjetaControlador.selTarjeta.fecha_compra}" />
+
+                            <p:outputLabel value="Fecha de Caducidad"/>
+                            <p:outputLabel id="txtCaducidad" value="#{tarjetaControlador.selTarjeta.fecha_compra}" />
+
+                            <p:outputLabel value="Numero de Comidas"/>
+                            <p:outputLabel id="txtComidas" value="#{tarjetaControlador.selTarjeta.fecha_caducidad}" />
+
+                            <p:outputLabel value="Costo"/>
+                            <p:outputLabel id="txtCosto" value="#{tarjetaControlador.selTarjeta.costo}" />
+
+                            <p:outputLabel value="Abono"/>
+                            <p:outputLabel id="txtAbono" value="#{tarjetaControlador.selTarjeta.bono}" />
+
+                            <p:outputLabel value="Saldo"/>
+                            <p:outputLabel id="txtSaldo" value="#{tarjetaControlador.selTarjeta.saldo}" />
+                            <p:outputLabel value="Empleado"/>
+                            <p:outputLabel value="nombre logueado"/>
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Eliminar" action="#{tarjetaControlador.eliminarTarjeta()}" update=":frmTarjeta:lstTarjeta"/>
+                        <p:commandButton value="Cancelar" onclick="PF('wglDeletTarjeta').hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+                <!--Consumo-->
+                <p:dialog widgetVar="wglInsertConsumoTarjeta" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Insertar consumo de la tarjeta">
+                    <h:form id="frmConsumo">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Cantidad"/>
+                            <p:inputText id="txtCantidad" label="Cantidad" requiredMessage="Ingrese la cantidad de platos" value="#{consumoTarjetaControlador.objConsumoTarjeta.cantidad}" required="true"/>
+
+                            <p:outputLabel value="Descripción"/>
+                            <p:inputText id="txtDescripcion" label="Descripcion" requiredMessage="Ingrese la descripción" value="#{consumoTarjetaControlador.objConsumoTarjeta.descripcion}" required="true"/>
+
+                            <p:outputLabel value="Fecha de Consumo"/>
+                            <p:inputText id="txtConsumo" label="Consumo" requiredMessage="Ingrese la fecha de consumo" value="#{consumoTarjetaControlador.objConsumoTarjeta.fecha_consumo}" required="true"/>
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Ingresar" action="#{consumoTarjetaControlador.insertarConsumoTarjeta()}" update=":frmConsumoTarjeta:lstConsumoTarjeta"/>
+                        <p:commandButton value="Cancelar" onclick="wglInsertConsumoTarjeta.hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+
+</html>

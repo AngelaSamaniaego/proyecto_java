@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <title>Facelets Template</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="../Plantilla/formulario.xhtml">
+            <ui:define name="top">
+                Página que permite manipular los datos de los platos
+            </ui:define>
+            <ui:define name="contenido">
+                <h:form id="frmPlato">
+                    <p:panel id="platoContenido" header="Datos del Plato">
+                        <p:dataTable id="lstPlato" value="#{platoControlador.lstPlato}" var="plato" selection="#{platoControlador.selPlato}" rowKey="#{plato.id_plato}" selectionMode="single" paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20" emptyMessage="No se han encontrado registros" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PageLinks} {NextPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}">
+                                     
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{plato.nombre}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Descripción">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{plato.descripcion}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Costo">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{plato.costo}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Acciones"/>
+                                </f:facet>
+                                <p:commandButton icon="ui-icon-pencil" title="Editar" update=":frmUpdatPlato:pnlDatos" onclick="PF('wglUpdatPlato').show()">
+                                    <f:setPropertyActionListener value="#{plato}" target="#{platoControlador.selPlato}"/>
+                                </p:commandButton>
+
+                                <p:commandButton icon="ui-icon-trash" title="Eliminar" update=":frmDeletPlato" onclick="PF('wglDeletPlato').show()">
+                                    <f:setPropertyActionListener value="#{plato}" target="#{platoControlador.selPlato}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <f:facet name="footer">
+                                <p:commandButton id="btnNuevo" value="Nuevo Plato" icon="fa-child" onclick="PF('wglInsertPlato').show()" type="button"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form> 
+            </ui:define>
+            <ui:define name="dialogos">
+
+                <!--Insertar Plato-->
+                <p:dialog widgetVar="wglInsertPlato" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Insertar plato">
+                    <h:form id="frmInsertPlato">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Nombre"/>
+                            <p:inputText id="txtNombre" label="Nombre" requiredMessage="Ingrese el nombre del plato" value="#{platoControlador.objPlato.nombre}" required="true"/>
+
+                            <p:outputLabel value="Descripción"/>
+                            <p:inputText id="txtDescripcion" label="Descripcion" value="#{platoControlador.objPlato.descripcion}" required="true"/>
+
+                            <p:outputLabel value="Precio"/>
+                            <p:inputText id="txtPrecio" type="" label="Precio" value="#{platoControlador.objPlato.costo}" required="true"/>
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Ingresar" process="@form" action="#{platoControlador.insertarPlato}" update=":frmPlato:platoContenido"/>
+                        <p:commandButton value="Cancelar" onclick="PF('wglInsertPlato').hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+
+                <!--Actualizar Plato-->
+                <p:dialog widgetVar="wglUpdatPlato" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Actualizar plato">
+                    <h:form id="frmUpdatPlato">
+                        <p:panelGrid columns="2" id="pnlDatos">
+                            <p:outputLabel value="Nombre"/>
+                            <p:inputText id="txtNombre" label="Nombre" value="#{platoControlador.selPlato.nombre}" required="true"/>
+
+                            <p:outputLabel value="Descripción"/>
+                            <p:inputText id="txtDescripcion" label="Descripcion" value="#{platoControlador.selPlato.descripcion}" required="true"/>
+
+                            <p:outputLabel value="Precio"/>
+                            <p:inputText id="txtPrecio" label="Precio" value="#{platoControlador.selPlato.costo}" required="true"/>
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Actalizar" action="#{platoControlador.actualizarPlato()}" update=":frmPlato:lstPlato" process="@form"/>
+                        <p:commandButton value="Cancelar" onclick="PF('wglUpdatPlato').hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+
+                <!--Eliminar Plato-->
+                <p:dialog widgetVar="wglDeletPlato" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Eliminar plato">
+                    <h:form id="frmDeletPlato">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Nombre"/>
+                            <p:inputText id="txtNombre" label="Nombre" value="#{platoControlador.selPlato.nombre}" required="true"/>
+
+                            <p:outputLabel value="Descripción"/>
+                            <p:inputText id="txtDescripcion" label="Descripcion" value="#{platoControlador.selPlato.descripcion}" required="true"/>
+
+                            <p:outputLabel value="Precio"/>
+                            <p:inputText id="txtPrecio" label="Precio" value="#{platoControlador.selPlato.costo}" required="true"/>
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Eliminar" action="#{platoControlador.eliminarPlato()}" update=":frmPlato:lstPlato" process="@form"/>
+                        <p:commandButton value="Cancelar" onclick="PF('wglDeletPlato').hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

@@ -1,0 +1,154 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <title>Facelets Template</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="../Plantilla/formulario.xhtml">
+            <ui:define name="top">
+                Página que permite manipular los datos de un empleado
+            </ui:define>
+            <ui:define name="contenido">
+                <h:form id="frmEmpleado">
+                    <p:growl id="mensajes" autoUpdate="true"/>
+                    <p:panel id="empleadoContenido" header="Datos del Empleado">
+                        <p:dataTable id="lstEmpleado" value="#{empleadoControlador.lstEmpleado}" var="empleado" selection="#{empleadoControlador.selEmpleado}" rowKey="#{empleado.id_empleado}" selectionMode="single" paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20" emptyMessage="No se han encontrado registros" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PageLinks} {NextPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Id Empleado">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{empleado.id_empleado}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre del Empleado">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{empleado.nombre_emp}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre de la Empresa">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{empleado.nom_empresa}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Cargo">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{empleado.cargo}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Acciones"/>
+                                </f:facet>
+                                <p:commandButton icon="ui-icon-pencil" title="Editar" update=":frmUpdatEmpleado:pgEditar" onclick="PF('wglUpdatEmpleado').show()">
+                                    <f:setPropertyActionListener value="#{empleado}" target="#{empleadoControlador.selEmpleado}"/>
+                                </p:commandButton>
+                                <p:commandButton icon="ui-icon-trash" title="Eliminar" update=":frmDeletEmpleado" onclick="PF('wglDeletEmpleado').show()">
+                                    <f:setPropertyActionListener value="#{empleado}" target="#{empleadoControlador.selEmpleado}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <f:facet name="footer">
+                                <p:commandButton id="btnNuevo" value="Nuevo Empleado" icon="fa-child" onclick="PF('wglInsertEmpleado').show()" type="button" update=":frmInsertEmpleado:pgNuevoEmpleado"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form> 
+            </ui:define>
+
+            <ui:define name="dialogos">
+
+                <!--Dialogo insertar-->
+                <p:dialog widgetVar="wglInsertEmpleado" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Insertar empleado">
+                    <h:form id="frmInsertEmpleado">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Nombre del Empleado"/>
+                            <p:inputText id="txtNombre" label="Nombre" requiredMessage="Ingrese el nombre del empleado" value="#{empleadoControlador.objEmpleado.nombre_emp}" required="true"/>
+
+                            <p:outputLabel value="Nombre de la Empresa"/>
+                            <p:selectOneMenu id="txtNomEmpresa" value="#{empleadoControlador.codEmpresa}">
+
+                                <f:selectItems value="#{empresaControlador.lstEmpresa}" var="Emp"
+                                               itemLabel="#{Emp.nombre}" itemValue="#{Emp.id_restaurant}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Password"/>
+                            <p:password id="txtPassword" label="Password" requiredMessage="Ingrese el password" value="#{empleadoControlador.objEmpleado.pass}" required="true"/>
+
+                            <p:outputLabel value="Cargo"/>
+                            <p:inputText id="txtCargo" label="Cargo" requiredMessage="Ingrese el cargo" value="#{empleadoControlador.objEmpleado.cargo}" required="true"/>
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Ingresar" process="@form" action="#{empleadoControlador.insertarEmpleado}" update=":frmEmpleado:lstEmpleado"/>
+                        <p:commandButton value="Cancelar" onclick="wglInsertEmpleado.hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+
+                <!--Dialogo actualizar-->
+                <p:dialog widgetVar="wglUpdatEmpleado" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Actualizar Empleado">
+                    <h:form id="frmUpdatEmpleado">
+                        <p:panelGrid id="pgEditar" columns="2">
+                            <p:outputLabel value="Nombre del Empleado"/>
+                            <p:inputText id="txtNombre" label="Nombre" value="#{empleadoControlador.selEmpleado.nombre_emp}" required="true"/>
+
+                            <p:outputLabel value="Nombre de la Empresa"/>
+                            <p:selectOneMenu id="txtNomEmpresa" value="#{empleadoControlador.selEmpleado.cod_empresa}">
+
+                                <f:selectItems value="#{empresaControlador.lstEmpresa}" var="Emp"
+                                               itemLabel="#{Emp.nombre}" itemValue="#{Emp.id_restaurant}"/>
+                            </p:selectOneMenu>
+                            
+                            <p:outputLabel value="Password"/>
+                            <p:password id="txtPassword" label="Password" value="#{empleadoControlador.selEmpleado.pass}" required="true"/>
+
+                            <p:outputLabel value="Cargo"/>
+                            <p:inputText id="txtCargo" label="Cargo" value="#{empleadoControlador.selEmpleado.cargo}" required="true"/>
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Actualizar" process="@form" action="#{empleadoControlador.actualizarEmpleado()}" update=":frmEmpleado:lstEmpleado"/>
+                        <p:commandButton value="Cancelar" onclick="wglUpdatEmpleado.hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+
+                <!--Eliminar empleado-->
+                <p:dialog widgetVar="wglDeletEmpleado" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Eliminar Empleado">
+                    <h:form id="frmDeletEmpleado">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Nombre del Empleado"/>
+                            <p:outputLabel id="txtNombre" value="#{empleadoControlador.selEmpleado.nombre_emp}" />
+
+                            <p:outputLabel value="Nombre de la Empresa"/>
+                            <p:outputLabel id="txtNomEmpresa" value="#{empleadoControlador.selEmpleado.nom_empresa}" />
+                            
+                            <p:outputLabel value="Password"/>
+                            <p:password id="txtPassword" value="#{empleadoControlador.selEmpleado.pass}" />
+
+                            <p:outputLabel value="Cargo"/>
+                            <p:outputLabel id="txtCargo" value="#{empleadoControlador.selEmpleado.cargo}" />
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Eliminar" process="@form" action="#{empleadoControlador.eliminarEmpleado()}" update=":frmEmpleado:lstEmpleado"/>
+                        <p:commandButton value="Cancelar" onclick="wglDeletEmpleado.hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

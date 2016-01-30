@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+       <ui:composition template="/Plantilla/formulario.xhtml">
+            <ui:define name="contentido">
+                <h:form>
+                    <p:panel id="pnlAutenticar">
+                        <p:growl id="mensajes" autoUpdate="true"/>
+                        <h:panelGrid columns="2" style=" width: 31%; margin-bottom: 30%; margin-top: 30%; margin-left: 65%; background-image: none; background-color: transparent;">
+                            <h:panelGrid columns="2" style="width: 100%;">
+                                <h:outputLabel value="Usuario:" />
+                                <p:inputMask style="width: 70%;" id="txtempleado" title="Digite su Codigo de identificación" value="#{loginUsuario.objUsuario.id_empleado}" mask="9999999999" required="true" requiredMessage="#{msnSeguridad.oblUsuario}"/>
+                                <h:outputLabel value="Contraseña:" />
+                                <p:inputText style="width: 70%;" id="txtContrasenia" type="password" value="#{loginUsuario.objUsuario.pass}" required="true" requiredMessage="#{msnSeguridad.oblPassword}"/>
+
+                                <center>
+                                    <p:commandButton id="btnAutentica" value="Iniciar sesión" action="#{loginUsuario.login()}" style="margin: 15px 0 0 20px; background-image:none; background-color: #045491; color: white;"/>
+                                </center>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <p:panel style="border: none; background-color: none; background-image: none; background-color: transparent;">
+                            <div align="right" style="margin-right: 1%; margin-bottom: 1%">
+                                <h:form>
+                                    <h:commandLink style="background-image: none; background-color: none; color: #ccc; font-size: 8px;" value="CONTACTA CON NOSOTROS" action="#"/>
+                                    <h:outputLabel style="background-image: none; background-color: none; color: #ccc; font-size: 8px;" value=" | "/>                                    
+                                    <h:commandLink style="background-image: none; background-color: none; color: #ccc; font-size: 8px;" value="CONDICIONES DE USO" action="#"/>
+                                    <h:outputLabel style="background-image: none; background-color: none; color: #ccc; font-size: 8px;" value=" | "/>
+                                    <h:commandLink style="background-image: none; background-color: none; color: #ccc; font-size: 8px;" value="PRIVACIDAD Y COOKIES" action="#"/>
+                                    <h:outputLabel style="background-image: none; background-color: none; color: #ccc; font-size: 8px;" value=" | "/>
+                                    <font style="background-image: none; background-color: none; color: #ccc; font-size: 8px;">
+                                        <script>
+                                            var f = new Date();
+                                            document.write("©" + f.getFullYear() + " FIE");
+                                        </script>
+                                    </font>
+                                </h:form>
+                            </div>
+                        </p:panel>
+                    </p:panel>
+                    <p:blockUI block="pnlAutenticar" trigger="btnAutentica" >
+                        AUTENTICANDO...<br/>
+                        <p:graphicImage value="/resources/imagenes/ajaxloadingbar.gif"/>
+                    </p:blockUI>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

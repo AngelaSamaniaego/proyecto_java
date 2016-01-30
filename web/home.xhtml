@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <p:layout fullPage="true">
+            <p:layoutUnit position="north" size="100" gutter="0" collapsible="true">
+                <ui:include src="Plantilla/cabecera.xhtml"/>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="south" size="50" gutter="6">
+                <ui:include src="Plantilla/pie.xhtml"/>
+            </p:layoutUnit>
+            <font size="2">
+                <p:layoutUnit position="west" size="250" resizable="true" header="Menú">
+                    <h:form>
+
+                        <p:menu model="#{menuView.model}" />
+
+                        <p:menu>
+                            <p:submenu label="Empresa">
+                                <p:menuitem value="Sucursal" action="#{menuControlador.frmEmpresa()}" update=":paginas" icon="ui-icon-pin-w"/>
+
+                                <p:menuitem value="Cliente" action="#{menuControlador.frmCliente()}" update=":paginas" icon="ui-icon-pin-w"/>
+
+                                <p:menuitem value="Empleado" action="#{menuControlador.frmEmpleado()}" update=":paginas" icon="ui-icon-pin-w"/>
+
+                            </p:submenu>
+                            <p:submenu label="Tarjeta">
+                                <p:menuitem value="Estado de la Tarjeta" action="#{menuControlador.frmEstadoTarjeta()}" update=":paginas" icon="ui-icon-pin-w"/>
+
+                                <p:menuitem value="Tarjeta" action="#{menuControlador.frmTarjeta()}" update=":paginas" icon="ui-icon-pin-w"/>
+
+                            </p:submenu>
+                            <p:submenu label="Facturación">
+                                <p:menuitem value="Plato" action="#{menuControlador.frmPlato()}" update=":paginas" icon="ui-icon-pin-w"/>
+
+                                <p:menuitem value="Factura" action="#{menuControlador.frmFactura()}" update=":paginas" icon="ui-icon-pin-w"/>
+                            </p:submenu>
+                        </p:menu>
+
+                    </h:form>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center" gutter="1">
+                    <h:panelGroup id="paginas">
+                        <iframe name="ifr" width="100%" height="100%" src="#{menuControlador.ruta}" style="border: 0"></iframe>
+                    </h:panelGroup>
+                </p:layoutUnit>
+                </font>
+        </p:layout>
+        
+    </h:body>
+</html>

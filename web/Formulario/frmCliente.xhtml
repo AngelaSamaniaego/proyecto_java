@@ -1,0 +1,372 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+        <script language="javascript" type="text/javascript">
+            //*** Este Codigo permite Validar que sea un campo Numerico
+            function Solo_Numerico(variable) {
+                Numer = parseInt(variable);
+                if (isNaN(Numer)) {
+                    return "";
+                }
+                return Numer;
+            }
+            function ValNumero(Control) {
+                Control.value = Solo_Numerico(Control.value);
+            }
+            //*** Fin del Codigo para Validar que sea un campo Numerico
+        </script>
+    </h:head>
+    <h:body>
+
+        <ui:composition template="../Plantilla/formulario.xhtml">
+            <ui:define name="top">
+                Página que permite manipular los datos de un cliente
+            </ui:define>
+
+            <ui:define name="contenido">
+                <h:form id="frmCliente">
+                    <p:panel id="clienteContenido" header="Datos de Cliente">
+                        <p:dataTable id="lstCliente" value="#{clienteControlador.lstCliente}" var="cliente" selection="#{clienteControlador.selCliente}" 
+                                     rowKey="#{cliente.id_cliente}" selectionMode="single" paginator="true" rows="5" rowsPerPageTemplate="5,10,15,20" 
+                                     emptyMessage="No se han encontrado registros" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PageLinks} {NextPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Cédula">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{cliente.cedula}"></h:outputText>
+                            </p:column>
+                            <p:column>  
+                                <f:facet name="header">
+                                    <h:outputText value="Nombre">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{cliente.nombre_cliente}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Apellido">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{cliente.apellido_cliente}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Sexo">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{cliente.sexo}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Estado Civil">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{cliente.estado_civil}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Teléfono">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{cliente.telefono}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Correo">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{cliente.correo}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Ruc">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{cliente.ruc}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Dirección">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{cliente.direccion}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Acciones"/>
+                                </f:facet>
+                                <p:commandButton icon="ui-icon-pencil" title="Editar" update=":frmUpdatCliente:pgEditarC" onclick="PF('wglUpdatCliente').show()">
+                                    <f:setPropertyActionListener value="#{cliente}" target="#{clienteControlador.selCliente}"/>
+                                </p:commandButton>
+                                <p:commandButton icon="ui-icon-trash" title="Eliminar" update=":frmDeletCliente" onclick="PF('wglDeletCliente').show()">
+                                    <f:setPropertyActionListener value="#{cliente}" target="#{clienteControlador.selCliente}"/>
+                                </p:commandButton>
+                                <p:commandButton icon="ui-icon-document" title="Factura" update=":frmFactura" onclick="PF('wglFacturaCliente').show()">
+                                    <f:setPropertyActionListener value="#{cliente}" target="#{clienteControlador.selCliente}"/>
+                                </p:commandButton>
+                            </p:column>
+                            <f:facet name="footer">
+                                <p:commandButton id="btnNuevo" value="Nuevo Cliente" icon="fa-child" onclick="PF('wglInsertCliente').show()" type="button"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form> 
+            </ui:define>
+
+            <ui:define name="dialogos">
+                <!--Insertar Cliente-->
+                <p:dialog widgetVar="wglInsertCliente" modal="true" 
+                          resizable="false" showEffect="fade" hideEffect="explode" header="Insertar cliente">
+                    <h:form id="frmInsertCliente">
+                        <p:growl id="growl" showDetail="true" sticky="true" /> 
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Cédula"/>
+                            <p:inputText id="txtCedula" label="Cedula" requiredMessage="Ingrese el número de cedula" value="#{clienteControlador.objCliente.cedula}" required="true" type="number" converterMessage="El campo solo acepta números" />
+
+                            <p:outputLabel value="Nombre"/>
+                            <p:inputText id="txtNombre" label="Nombre" requiredMessage="Ingrese el nombre del cliente" value="#{clienteControlador.objCliente.nombre_cliente}" required="true"/>
+
+                            <p:outputLabel value="Apellido"/>
+                            <p:inputText id="txtApellido" label="Apellido" requiredMessage="Ingrese el apellido del cliente" value="#{clienteControlador.objCliente.apellido_cliente}" required="true"/>
+
+                            <p:outputLabel value="Sexo"/>
+                            <h:selectOneMenu id="txtSexo" value="#{clienteControlador.objCliente.sexo}">
+                                <f:selectItem itemLabel="Masculino" itemValue="Masculino" ></f:selectItem>
+                                <f:selectItem itemLabel="Femenino" itemValue="Femenino" ></f:selectItem>
+                            </h:selectOneMenu>
+
+                            <p:outputLabel value="Estado Civil"/>
+                            <h:selectOneMenu id="txtEstadoCivil" value="#{clienteControlador.objCliente.estado_civil}">
+                                <f:selectItem itemLabel="Soltero" itemValue="Soltero" ></f:selectItem>
+                                <f:selectItem itemLabel="Casado" itemValue="Casado" ></f:selectItem>
+                                <f:selectItem itemLabel="Divorciado" itemValue="Divorciado" ></f:selectItem>
+                                <f:selectItem itemLabel="Viudo" itemValue="Viudo" ></f:selectItem>
+                                <f:selectItem itemLabel="Union Libre" itemValue="Union Libre" ></f:selectItem>
+                            </h:selectOneMenu>
+
+                            <p:outputLabel value="Teléfono"/>
+                            <p:inputText id="txtTelefono" label="Telefono" type="number" requiredMessage="Ingrese el teléfono" value="#{clienteControlador.objCliente.telefono}" required="true"/>
+
+                            <p:outputLabel value="Correo"/>
+                            <p:inputText id="txtCorreo" label="Correo"  requiredMessage="Ingrese el correo" value="#{clienteControlador.objCliente.correo}" required="true"/>
+
+                            <p:outputLabel value="Ruc"/>
+                            <p:inputText id="txtRuc" label="Ruc" type="number" requiredMessage="Ingrese el ruc" value="#{clienteControlador.objCliente.ruc}"  required="true"/>
+
+                            <p:outputLabel value="Dirección"/>
+                            <p:inputText id="txtDireccion" label="Direccion" requiredMessage="Ingrese la dirección" value="#{clienteControlador.objCliente.direccion}" required="true"/>
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Ingresar" process="@form" action="#{clienteControlador.insertarCliente()}" update=":frmCliente:lstCliente"/>
+                        <p:commandButton value="Cancelar" onclick="PF('wglInsertCliente').hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+
+                <!--Actualizar Cliente-->
+                <p:dialog widgetVar="wglUpdatCliente" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Actualizar cliente">
+                    <h:form id="frmUpdatCliente">
+                        <p:panelGrid columns="2" id="pgEditarC">
+                            <p:outputLabel value="Cedula"/>
+                            <p:inputText id="txtCedula" label="Cedula" value="#{clienteControlador.selCliente.cedula}" required="true"/>
+
+                            <p:outputLabel value="Nombre"/>
+                            <p:inputText id="txtNombre" label="Nombre" value="#{clienteControlador.selCliente.nombre_cliente}" required="true"/>
+
+                            <p:outputLabel value="Apellido"/>
+                            <p:inputText id="txtApellido" label="Apellido" value="#{clienteControlador.selCliente.apellido_cliente}" required="true"/>
+
+                            <p:outputLabel value="Sexo"/>
+                            <h:selectOneMenu id="txtSexo" value="#{clienteControlador.selCliente.sexo}">
+                                <f:selectItem itemLabel="Masculino" itemValue="Masculino" value="#{clienteControlador.objCliente.sexo}" ></f:selectItem>
+                                <f:selectItem itemLabel="Femenino" itemValue="Femenino" value="#{clienteControlador.objCliente.sexo}" ></f:selectItem>
+                            </h:selectOneMenu>
+                            <p:outputLabel value="Estado Civil"/>
+                            <h:selectOneMenu id="txtEstadoCivil" value="#{clienteControlador.selCliente.estado_civil}">
+                                <f:selectItem itemLabel="Soltero" itemValue="Soltero" value="#{clienteControlador.objCliente.estado_civil}" ></f:selectItem>
+                                <f:selectItem itemLabel="Casado" itemValue="Casado" value="#{clienteControlador.objCliente.estado_civil}" ></f:selectItem>
+                                <f:selectItem itemLabel="Divorciado" itemValue="Divorciado" value="#{clienteControlador.objCliente.estado_civil}" ></f:selectItem>
+                                <f:selectItem itemLabel="Viudo" itemValue="Viudo" value="#{clienteControlador.objCliente.estado_civil}" ></f:selectItem>
+                                <f:selectItem itemLabel="Union Libre" itemValue="Union Libre" value="#{clienteControlador.objCliente.estado_civil}" ></f:selectItem>
+                            </h:selectOneMenu>
+
+                            <p:outputLabel value="Telefono"/>
+                            <p:inputText id="txtTelefono" label="Telefono" value="#{clienteControlador.selCliente.telefono}" required="true"/>
+
+                            <p:outputLabel value="Correo"/>
+                            <p:inputText id="txtCorreo" label="Correo" value="#{clienteControlador.selCliente.correo}" required="true"/>
+
+                            <p:outputLabel value="Ruc"/>
+                            <p:inputText id="txtRuc" label="Ruc" value="#{clienteControlador.selCliente.ruc}" required="true"/>
+
+                            <p:outputLabel value="Dirección"/>
+                            <p:inputText id="txtDireccion" label="Direccion" value="#{clienteControlador.selCliente.direccion}" required="true"/>
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Actualizar" process="@form" action="#{clienteControlador.actualizarCliente()}" update=":frmCliente:lstCliente"/>
+                        <p:commandButton value="Cancelar" onclick="PF('wglUpdatCliente').hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+
+                <!--Eliminar Cliente-->
+                <p:dialog widgetVar="wglDeletCliente" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Eliminar cliente">
+                    <h:form id="frmDeletCliente">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Cedula"/>
+                            <p:outputLabel id="txtCedula" value="#{clienteControlador.selCliente.cedula}" />
+
+                            <p:outputLabel value="Nombre"/>
+                            <p:outputLabel id="txtNombre" value="#{clienteControlador.selCliente.nombre_cliente}" />
+
+                            <p:outputLabel value="Apellido"/>
+                            <p:outputLabel id="txtApellido" value="#{clienteControlador.selCliente.apellido_cliente}" />
+
+                            <p:outputLabel value="Sexo"/>
+                            <p:outputLabel id="txtSexo" value="#{clienteControlador.selCliente.sexo}" />
+
+                            <p:outputLabel value="Estado Civil"/>
+                            <p:outputLabel id="txtEstadoCivil" value="#{clienteControlador.selCliente.estado_civil}" />
+
+                            <p:outputLabel value="Telefono"/>
+                            <p:outputLabel id="txtTelefono" value="#{clienteControlador.selCliente.telefono}" />
+
+                            <p:outputLabel value="Correo"/>
+                            <p:outputLabel id="txtCorreo" value="#{clienteControlador.selCliente.correo}" />
+
+                            <p:outputLabel value="Ruc"/>
+                            <p:outputLabel id="txtRuc" value="#{clienteControlador.selCliente.ruc}" />
+
+                            <p:outputLabel value="Dirección"/>
+                            <p:outputLabel id="txtDireccion"  value="#{clienteControlador.selCliente.direccion}" />
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Eliminar" action="#{clienteControlador.eliminarCliente()}" update=":frmCliente:lstCliente"/>
+                        <p:commandButton value="Cancelar" onclick="PF('wglDeletCliente').hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+
+                <!--Factura-->
+                <p:dialog widgetVar="wglFacturaCliente" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Factura">
+
+                    <h:form id="frmFactura">
+                        <p:panel header="" style="width: 650px; margin:0 auto; ">
+
+                            <!--Datos factura-->
+                            <p:layout id="capaDatosTarjeta" style=" width: 100%; height: 110px">
+
+                                <p:layoutUnit id="datosFact" position="east" style="padding: 5px; 
+                                              text-align: center; font-size: 14px" size="200">
+                                    <h:panelGrid columns="1" style="font-size: 14px; font-weight: bold; margin-top: 15px; margin: 0 auto">
+                                        <h7>FACTURA 004-001</h7><br></br>
+                                        <h8>No.</h8><p:outputLabel value="00001"/><br></br>
+                                        <h10>Aut.SRI.1117876555 </h10>
+                                    </h:panelGrid>
+
+                                </p:layoutUnit>
+                                <p:layoutUnit id="datosRest" position="center" style="padding: 5px; 
+                                              text-align: center; font-size: 14px" size="200">
+                                    <h:panelGrid columns="1" style="font-size: 14px; font-weight: bold; margin-top: 10px; margin: 0 auto">
+                                        <h7>SAMANIEGO OROZCO MARÍA ELIZABETH</h7><br></br>
+                                        <h8>RESTAUTANTE CRISTO TE AMA </h8><br></br>
+                                        <h9>RUC: 0602770711001</h9><br></br>
+                                        <h10>Dirección: Larrea 15-58 y Olmedo</h10><br></br>
+                                        <h11>Telf.: 2948192</h11>
+                                    </h:panelGrid>
+                                </p:layoutUnit>
+
+                            </p:layout>
+                            <p:separator/>
+
+                            <!--Cargar datos-->
+                            <h:panelGrid id="datosClient" columns="2" >
+                                <p:outputLabel value="Fecha:" style="font-weight: bold"/>
+                                <p:outputLabel value="#{facturaControlador.objFactura.fecha.toLocaleString()}"/>
+                                <p:outputLabel value="Telf: " style="font-weight: bold"/>  
+                                <p:outputLabel value="#{clienteControlador.selCliente.telefono}"/>
+                                <p:outputLabel value="Sr.: " style="font-weight: bold"/> 
+                                <p:outputLabel value="#{clienteControlador.selCliente.nombre_cliente} #{clienteControlador.selCliente.apellido_cliente}"/>
+                                <p:outputLabel value="Dirección: " style="font-weight: bold"/>  
+                                <p:outputLabel value="#{clienteControlador.selCliente.direccion}"/>
+                                <p:outputLabel value="Ruc./CI :" style="font-weight: bold"/>
+                                <p:outputLabel value="#{clienteControlador.selCliente.cedula}"/>
+                                <p:outputLabel value="Guía Emisión: " style="font-weight: bold"/>
+                                <p:outputLabel value=" "/>
+                            </h:panelGrid>
+
+                            <p:separator/>
+
+                            <!--Inserta detalle-->
+                            <p:dataTable id="tabladeConsumo" value="#{detalleControlador}" var="p">
+                                <p:column headerText="Cantidad">
+                                    <h:inputText value="#{detalleControlador.objDetalle.cantidad}"/>
+
+                                </p:column>
+                                <p:column headerText="Detalle">
+                                    <h:outputText value="#{detalleControlador.objDetalle.plato}"/>
+                                    <p:selectOneMenu id="txtDetalle" value="#{detalleControlador.objDetalle.plato}">
+
+                                        <f:selectItems value="#{platoControlador.lstPlato}" var="Plat"
+                                                       itemLabel="#{Plat.nombre}" itemValue="#{Plat.id_plato}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column headerText="Valor Unitario">
+                                    <h:inputText value="#{detalleControlador.objDetalle.precio}"/>
+                                </p:column>
+                                <p:column headerText="Valor Total">
+                                    <h:outputText value="#{detalleControlador.objDetalle.cantidad} * #{detalleControlador.objDetalle.precio}"/>
+                                </p:column>
+                            </p:dataTable>
+                            <p:separator/>
+
+                            <!--Final de la factura-->
+                            <p:layout id="capaDatosFac" style=" width: 100%; height: 110px">
+                                <p:layoutUnit id="datosFac" position="center" style="padding: 5px; font-size: 14px" size="200">
+                                    <h:panelGrid columns="1" style="font-size: 14px; font-weight: bold; margin-top: 10px; margin: 0 auto">
+                                        <h8>SubTotal</h8><br></br>
+                                        <h10>T. G IVA</h10><br></br>
+                                        <h10>T. G IVA</h10><br></br>
+                                        <h8>Impuesto IVA</h8><br></br>
+                                        <h8>Total</h8><br></br>
+                                    </h:panelGrid>
+                                </p:layoutUnit>
+
+                                <p:layoutUnit id="datos" position="east" style="padding: 5px; font-size: 14px" size="200">
+                                    <h:panelGrid columns="1" style="font-size: 14px; font-weight: bold; margin-top: 10px; margin: 0 auto">
+                                        <h8>________</h8><br></br>
+                                        <h10>________</h10><br></br>
+                                        <h10>________</h10><br></br>
+                                        <h8>_________</h8><br></br>
+                                        <h8>_____</h8><br></br>
+                                    </h:panelGrid>
+                                </p:layoutUnit>
+
+                                <p:layoutUnit id="datosTota" position="west" style="padding: 5px; font-size: 14px" size="200">
+                                    <h:panelGrid columns="2" style="font-size: 14px; font-weight: bold; margin-top: 10px; margin: 0 auto">
+                                        <br></br>
+                                        <h8>________________</h8><br></br>
+                                        <h10>Cliente</h10>
+                                        <br></br>
+                                        <h8>________________</h8><br></br>
+                                        <h10>Firma Autorizada</h10>
+                                    </h:panelGrid>
+                                </p:layoutUnit>
+
+                            </p:layout>
+                            <p:separator/>
+                            <p:commandButton value="Registrar" action="#{facturaControlador.insertarFactura()}" style="width: 150px; height: 40px"/>
+                            <p:commandButton value="Imprimir" style="width: 150px; height: 40px"/>
+                            <p:commandButton value="Cancelar" onclick="PF('wglFacturaCliente').hide()" process="@this" type="reset" style="width: 150px; height: 40px"/>
+                        </p:panel>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

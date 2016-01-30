@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <h:outputStylesheet name="./css/default.css"/>
+        <h:outputStylesheet name="./css/cssLayout.css"/>
+        <title>Facelets Template</title>
+    </h:head>
+
+    <h:body>
+
+        <ui:composition template="../Plantilla/formulario.xhtml">
+            <ui:define name="top">
+                Página que permite manipular los datos del Estado de la Tarjeta
+            </ui:define>
+            <ui:define name="contenido">
+                <h:form id="frmEstadoTarjeta">
+                    <p:panel id="estadoTarjetaContenido" header="Datos del Estado de la Tarjeta">
+                        <p:dataTable id="lstEstadoTarjeta" value="#{estadoTarjetaControlador.lstEstado_Tarjeta}" var="estado" selection="#{estadoTarjetaControlador.selEstado_Tarjeta}" rowKey="#{estado.id_estado}" selectionMode="single" paginator="true" rows="10" rowsPerPageTemplate="5,10,15,20" emptyMessage="No se han encontrado registros" paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PageLinks} {NextPageLink} {PageLinks} {LastPageLink} {RowsPerPageDropdown}">
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Descripción">
+                                    </h:outputText>
+                                </f:facet>
+                                <h:outputText value="#{estado.descripcion}"></h:outputText>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Acciones"/>
+                                </f:facet>
+                                <p:commandButton icon="ui-icon-pencil" title="Editar" update=":frmUpdatEstadoTarjeta:pnlDatos" onclick="PF('wglUpdatEstadoTarjeta').show()">
+                                    <f:setPropertyActionListener value="#{estado}" target="#{estadoTarjetaControlador.selEstado_Tarjeta}"/>
+                                </p:commandButton>
+                                <p:commandButton icon="ui-icon-trash" title="Eliminar" update=":frmDeletEstadoTarjeta" onclick="PF('wglDeletEstadoTarjeta').show()">
+                                    <f:setPropertyActionListener value="#{estado}" target="#{estadoTarjetaControlador.selEstado_Tarjeta}"/></p:commandButton>
+                            </p:column>
+                            <f:facet name="footer">
+                                <p:commandButton id="btnNuevo" value="Nueva Estado de Tarjeta" icon="fa-child" onclick="PF('wglInsertEstadoTarjeta').show()" type="button"/>
+                            </f:facet>
+                        </p:dataTable>
+                    </p:panel>
+                </h:form> 
+            </ui:define>
+            <ui:define name="dialogos">
+
+                <!--Insertar estado de la tarjeta-->
+                <p:dialog widgetVar="wglInsertEstadoTarjeta" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Insertar estado de la tarjeta">
+                    <h:form id="frmInsertEstadoTarjeta">
+                        <p:panelGrid columns="2" >
+                            <p:outputLabel value="Descripción"/>
+                            <p:inputText id="txtDescripcion" label="Descripcion" requiredMessage="Ingrese la descripción de la tarjeta" value="#{estadoTarjetaControlador.objEstado_Tarjeta.descripcion}" required="true"/>
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Ingresar" action="#{estadoTarjetaControlador.insertarEstadoTarjeta()}" update=":frmEstadoTarjeta:lstEstadoTarjeta"/>
+                        <p:commandButton value="Cancelar" onclick="wglInsertEstadoTarjeta.hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+
+                <!--Actualizar estado de la tarjeta-->
+                <p:dialog widgetVar="wglUpdatEstadoTarjeta" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Insertar estado de la tarjeta">
+                    <h:form id="frmUpdatEstadoTarjeta">
+                        <p:panelGrid columns="2" id="pnlDatos">
+                            <p:outputLabel value="Descripción"/>
+                            <p:inputText id="txtDescripcion" label="Descripcion" requiredMessage="Ingrese la descripción de la tarjeta" value="#{estadoTarjetaControlador.selEstado_Tarjeta.descripcion}" required="true"/>
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Actualizar" action="#{estadoTarjetaControlador.actualizarEstadoTarjeta()}" update=":frmEstadoTarjeta:lstEstadoTarjeta"/>
+                        <p:commandButton value="Cancelar" onclick="wglUpdatEstadoTarjeta.hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+                
+         <!--Eliminar estado de la tarjeta-->
+                <p:dialog widgetVar="wglDeletEstadoTarjeta" modal="true" resizable="false" showEffect="fade" hideEffect="explode" header="Insertar estado de la tarjeta">
+                    <h:form id="frmDeletEstadoTarjeta">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Descripción"/>
+                            <p:outputLabel id="txtDescripcion" value="#{estadoTarjetaControlador.selEstado_Tarjeta.descripcion}" />
+
+                        </p:panelGrid>   
+                        <p:separator></p:separator>
+                        <p:commandButton value="Eliminar" action="#{estadoTarjetaControlador.eliminarEstadoTarjeta()}" update=":frmEstadoTarjeta:lstEstadoTarjeta"/>
+                        <p:commandButton value="Cancelar" onclick="wglDeletEstadoTarjeta.hide()" process="@this" type="reset"/>
+                    </h:form>
+                </p:dialog>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
